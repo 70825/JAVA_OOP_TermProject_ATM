@@ -1,11 +1,9 @@
-import java.util.*;
-
 public class ATM {
    
 	// °¢ ÁöÆó ¼ö
 	private int won_1000, won_5000, won_10000, won_50000;
    
-	public ATM(DataBase db) {
+	public ATM() {
 		this.won_1000 = 0;
 		this.won_50000 = 0;
 		this.won_10000 = 10000;
@@ -55,29 +53,5 @@ public class ATM {
 	public void Remittance(DataBase db, String from_account, String to_account, int cash) {
 		this.Deposit(db, from_account, cash);
 		this.WithDraw(db, to_account, cash);
-	}
-	
-	public long getAccountBalance(DataBase db, String account) {
-		return db.getBalance(account);
-	}
-	
-	public String getAccountName(DataBase db, String account) {
-		return db.getName(account);
-	}
-	
-	public String getAccountKind(DataBase db, String account) {
-		return db.getKindAccount(account);
-	}
-	
-	public String getAccountPeriod(DataBase db, String account) {
-		return db.getPeriod(account);
-	}
-	
-	public boolean checkAccountId(DataBase db, String account) {
-		return db.checkId(account);
-	}
-
-	public boolean checkAccountPassword(DataBase db, String account, String password) {
-		return db.checkPassword(account, password);
 	}
 }

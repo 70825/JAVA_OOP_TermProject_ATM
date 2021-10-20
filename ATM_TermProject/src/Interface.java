@@ -13,27 +13,29 @@ public class Interface {
 			System.out.println("******************************************");
 			System.out.println("               입금을 선택하였습니다.            ");
 			System.out.printf("입금할 지폐 4개를 입력하세요.(천원, 오천원, 만원, 오만원) : ");
-			StringTokenizer st = new StringTokenizer(sc.next(), " ");
-				
+			sc.nextLine(); // 버퍼 비우기
+			StringTokenizer st = new StringTokenizer(sc.nextLine());
+			
 			int won_1000 = Integer.parseInt(st.nextToken());
 			int won_5000 = Integer.parseInt(st.nextToken());
 			int won_10000 = Integer.parseInt(st.nextToken());
 			int won_50000 = Integer.parseInt(st.nextToken());
 			
-			atm.WithDraw(db, this.account, won_50000 * 50000 + won_10000 * 10000);
+			atm.Deposit(db, this.account, won_50000 * 50000 + won_10000 * 10000 + won_5000 * 5000 + won_1000 * 1000);
 			atm.setWon_1000(atm.getWon_1000() + won_1000);
 			atm.setWon_5000(atm.getWon_5000() + won_5000);
 			atm.setWon_10000(atm.getWon_10000() + won_10000);
 			atm.setWon_50000(atm.getWon_50000() + won_50000);
 			
 			System.out.println("      입금이 완료되었습니다. 이용해주셔서 감사합니다.   ");
-			System.out.println("******************************************");
+			System.out.printf("******************************************\n\n\n\n");
 		}
 		else if(flag == 2) { // 출금
 			System.out.println("******************************************");
 			System.out.println("               출금을 선택하였습니다.            ");
 			System.out.printf("출금할 지폐 2개를 입력하세요.(만원, 오만원) : ");
-			StringTokenizer st = new StringTokenizer(sc.next(), " ");
+			sc.nextLine(); // 버퍼 비우기
+			StringTokenizer st = new StringTokenizer(sc.nextLine(), " ");
 			
 			int won_10000 = Integer.parseInt(st.nextToken());
 			int won_50000 = Integer.parseInt(st.nextToken());
@@ -41,10 +43,10 @@ public class Interface {
 			boolean flag1 = false;
 			boolean flag2 = false;
 			
-			while(flag1 && flag2) {
+			while(!flag1 || !flag2) {
 				if(atm.getWon_10000() >= won_10000 && atm.getWon_50000() >= won_50000) {
 					flag1 = true;
-					if(atm.getAccountBalance(db, this.account) >= won_10000 * 10000 + won_50000 * 50000) {
+					if(db.getBalance(this.account) >= (won_10000 * 10000 + won_50000 * 50000)) {
 						flag2 = true;
 					}
 					else {
@@ -54,14 +56,22 @@ public class Interface {
 				else {
 					System.out.printf("atm에 있는 지폐가 부족합니다. 현재 atm에 만원은 %d개 존재하고, 오만원은 %d개 존재합니다.\n", atm.getWon_10000(), atm.getWon_50000());
 				}
+				
+				if(!flag1 || !flag2) {
+					System.out.printf("출금할 지폐 2개를 입력하세요.(만원, 오만원) : ");
+					st = new StringTokenizer(sc.nextLine(), " ");
+					
+					won_10000 = Integer.parseInt(st.nextToken());
+					won_50000 = Integer.parseInt(st.nextToken());
+				}
 			}
 			
-			atm.Deposit(db, this.account, won_50000 * 50000 + won_10000 * 10000);
+			atm.WithDraw(db, this.account, won_50000 * 50000 + won_10000 * 10000);
 			atm.setWon_10000(atm.getWon_10000() - won_10000);
 			atm.setWon_10000(atm.getWon_50000() - won_50000);
 			
 			System.out.println("    출금이 완료되었습니다. 이용해주셔서 감사합니다.     ");
-			System.out.println("******************************************");
+			System.out.printf("******************************************\n\n\n\n");
 		}
 		else if(flag == 3) { // 송금
 			System.out.println("******************************************");
@@ -69,16 +79,16 @@ public class Interface {
 			System.out.printf("송금을 받을 계좌번호를 입력하세요. : ");
 			String Remittance_Account = sc.next();
 			
-			boolean findAccount = atm.checkAccountId(db, Remittance_Account);
+			boolean findAccount = db.checkId(Remittance_Account);
 			while(!findAccount) {
 				System.out.println("송급 받을 계좌번호가 존재하지 않습니다. 다시 입력해주세요. : ");
 				Remittance_Account = sc.next();
-				findAccount = atm.checkAccountId(db, Remittance_Account);
+				findAccount = db.checkId(Remittance_Account);
 			}
 			
 			System.out.printf("송금할 금액을 입력해주세요. : ");
 			int money = sc.nextInt();
-			while (money <= atm.getAccountBalance(db, this.account)) {
+			while (money <= db.getBalance(this.account)) {
 				System.out.printf("계좌내에 있는 금액이 부족합니다. 다시 입력해주세요. : ");
 				money = sc.nextInt();
 			}
@@ -86,31 +96,30 @@ public class Interface {
 			atm.Remittance(db, this.account, Remittance_Account, money);
 			System.out.println("송금이 완료되었습니다.");
 			System.out.println("            이용해주셔서 감사합니다.             ");
-			System.out.println("******************************************");
+			System.out.printf("******************************************\n\n\n\n");
 		}
 		else{ // 잔액조회
 			System.out.println("******************************************");
 			System.out.println("            잔액 조회를 선택하였습니다.           ");
-			System.out.printf("이름: %s\n", atm.getAccountName(db, this.account));
+			System.out.printf("이름: %s\n", db.getName(this.account));
 			System.out.printf("계좌 번호: %s\n", this.account);
-			System.out.printf("통장 종류 : %s\n", atm.getAccountKind(db, this.account));
-			System.out.printf("잔액 : %d\n", atm.getAccountBalance(db, this.account));
-			if(atm.getAccountKind(db, this.account).equals("정기 예금 통장")){
-				System.out.printf("예금 만기 날짜 : %s\n", atm.getAccountPeriod(db, this.account));
+			System.out.printf("통장 종류 : %s\n", db.getKindAccount(this.account));
+			System.out.printf("잔액 : %d\n", db.getBalance(this.account));
+			if(db.getKindAccount(this.account).equals("정기 예금 통장")){
+				System.out.printf("예금 만기 날짜 : %s\n", db.getPeriod(this.account));
 			}
 			System.out.println("            이용해주셔서 감사합니다.             ");
-			System.out.println("******************************************");
+			System.out.printf("******************************************\n\n\n\n");
 		}
 	}
    
 	public boolean login_account(DataBase db, ATM atm, boolean flag) { // 계좌번호 입력
-		
 		if(flag) System.out.print("로그인할 계좌 번호를 입력해주세요. : ");
 		else System.out.print("존재하지 않는 계좌번호입니다. 다시 입력해주세요. : ");
 		
 		this.account = sc.next();
 		
-		return atm.checkAccountId(db, this.account);
+		return db.checkId(this.account);
 	}
 	
 	public boolean login_password(DataBase db, ATM atm, boolean flag) { // 비밀번호 입력
@@ -118,10 +127,11 @@ public class Interface {
 		else System.out.print("비밀번호가 틀렸습니다. 다시 입력해주세요. : ");
 		
 		this.password = sc.next();
-		return atm.checkAccountPassword(db, this.account, this.password);
+		
+		return db.checkPassword(this.account, this.password);
 	}
 	
-	public int open(DataBase db, ATM atm) {
+	public int open(DataBase db, ATM atm, boolean start) {
 		System.out.println("******************************************");
 		System.out.println("           은행을 찾아주셔서 감사합니다.          ");
 		System.out.println("******************************************");
@@ -131,14 +141,16 @@ public class Interface {
 		
 		if(val == 5 || val == 6) return val;
 		
-		boolean flag = this.login_account(db, atm, true);
-		while(flag) {
-			flag = this.login_account(db, atm, false);
-		}
-		
-		flag = this.login_password(db, atm, true);
-		while(flag) {
-			flag = this.login_password(db, atm, false);
+		if (start) {
+			boolean flag = this.login_account(db, atm, true);
+			while(!flag) {
+				flag = this.login_account(db, atm, false);
+			}
+			
+			flag = this.login_password(db, atm, true);
+			while(!flag) {
+				flag = this.login_password(db, atm, false);
+			}
 		}
 		
 		this.Display(db, atm, this.account, val);

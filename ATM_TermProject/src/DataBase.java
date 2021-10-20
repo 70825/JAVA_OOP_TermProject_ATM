@@ -16,7 +16,7 @@ public class DataBase {
 		account.put("00000-00000", (long)10000000);
 		info.put("11111-11111", "0000");
 		account.put("11111-11111", (long)20000);
-		info.put("22222-22222", "");
+		info.put("22222-22222", "0000");
 		account.put("22222-22222", (long)30000);
 	}
    
@@ -30,7 +30,7 @@ public class DataBase {
 	}
 	//인자로 받은 id와 password가 맵에 저장된 password와 일치하는지 알려줍니다.
 	public boolean checkPassword(String account, String password) {
-		if(password == info.get(account)) return true;
+		if(password.equals(info.get(account))) return true;
 		return false;
 	}
 	//인자로 받은 id가 db에 존재하는지 알려줍니다
@@ -39,5 +39,17 @@ public class DataBase {
 			return true;
 		}
 		return false;
+	}
+	
+	public String getName(String account) {
+		return account;
+	}
+	
+	public String getKindAccount(String account) {
+		return account;
+	}
+	
+	public String getPeriod(String account) {
+		return account;
 	}
 }
