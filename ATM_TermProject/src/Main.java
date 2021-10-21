@@ -2,8 +2,9 @@ public class Main {
     private static DataBase db = new DataBase();
     private static ATM atm = new ATM();
     private static Interface GUI = new Interface();
-   
+    
     public static void main(String[] args) {
+    	
     	boolean start = true;
     	while(true) {
     		int val = GUI.open(db, atm, start);
@@ -12,7 +13,10 @@ public class Main {
     			GUI.close(); // 단순히 종료만 누르면 손님이 올 때까지 기다림
     			start = true;
     		}
-    		else break;
+    		else{
+    			GUI.showLog(db);
+    			break;
+    		}
     	}
     }
 }

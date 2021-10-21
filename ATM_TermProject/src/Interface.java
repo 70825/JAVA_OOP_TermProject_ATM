@@ -29,7 +29,13 @@ public class Interface {
 			int won_10000 = Integer.parseInt(st.nextToken());
 			int won_50000 = Integer.parseInt(st.nextToken());
 			
-			atm.Deposit(db, this.account, won_50000 * 50000 + won_10000 * 10000 + won_5000 * 5000 + won_1000 * 1000);
+			int total = won_50000 * 50000 + won_10000 * 10000 + won_5000 * 5000 + won_1000 * 1000;
+			
+			long rogCash1 = db.getBalance(this.account);
+			atm.Deposit(db, this.account, total);
+			long rogCash2 = db.getBalance(this.account);
+			db.setLog(db.count++, this.account, flag, rogCash1, rogCash2, "");
+			
 			atm.setWon_1000(atm.getWon_1000() + won_1000);
 			atm.setWon_5000(atm.getWon_5000() + won_5000);
 			atm.setWon_10000(atm.getWon_10000() + won_10000);
@@ -74,7 +80,11 @@ public class Interface {
 				}
 			}
 			
+			long rogCash1 = db.getBalance(this.account);
 			atm.WithDraw(db, this.account, won_50000 * 50000 + won_10000 * 10000);
+			long rogCash2 = db.getBalance(this.account);
+			db.setLog(db.count++, this.account, flag, rogCash1, rogCash2, "");
+			
 			atm.setWon_10000(atm.getWon_10000() - won_10000);
 			atm.setWon_10000(atm.getWon_50000() - won_50000);
 			
@@ -101,12 +111,17 @@ public class Interface {
 				money = sc.nextInt();
 			}
 			
+			long rogCash1 = db.getBalance(this.account);
 			atm.Remittance(db, this.account, Remittance_Account, money);
+			long rogCash2 = db.getBalance(this.account);
+			db.setLog(db.count++, this.account, flag, rogCash1, rogCash2, Remittance_Account);
+			
 			System.out.println("송금이 완료되었습니다.");
 			System.out.println("            이용해주셔서 감사합니다.             ");
 			System.out.printf("******************************************\n\n\n\n");
 		}
 		else{ // 잔액조회
+			db.setLog(db.count++, this.account, flag, 0, 0, "");
 			System.out.println("******************************************");
 			System.out.println("            잔액 조회를 선택하였습니다.           ");
 			System.out.printf("이름: %s\n", db.getName(this.account));
@@ -170,5 +185,23 @@ public class Interface {
 		System.out.println("******************************************");
 		System.out.println("          은행을 이용해주셔서 감사합니다.          ");
 		System.out.printf("******************************************\n\n\n\n");
+	}
+	
+	public void showLog(DataBase db) {
+		System.out.printf("\n\n트랜잭션 로그 접근(Y/N) : ");
+		String ans = sc.next();
+		if(ans.equals("N")) return;
+		
+		while(true) {
+			System.out.printf("접근할 로그 번호를 입력해주세요.(0: 종료) : ");
+			int val = sc.nextInt();
+			if(val == 0) break;
+			
+			System.out.println("로그 번호 " + Integer.toString(val) + ": " + db.getLog(val));
+		}
+		
+		System.out.println("******************************************");
+		System.out.println("             시스템을 종료합니다.              ");
+		System.out.println("******************************************");
 	}
 }
