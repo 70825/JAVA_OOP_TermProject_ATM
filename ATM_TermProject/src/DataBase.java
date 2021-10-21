@@ -2,54 +2,79 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DataBase {
-	//(id, password) map
-    private Map<String, String> info = new HashMap <String, String>();
+
+    private Map<String, String> accountInfo = new HashMap <String, String>();
 	
-	//(id, cash) map
-	private Map<String, Long> account = new HashMap <String, Long>();
-   
-	//생성자 -> 생성이 안돼지?
+	private Map<String, Long> money = new HashMap <String, Long>();
+	
+	private Map<String, String> accountName = new HashMap <String, String>();
+	
+	private Map<String, Integer> accountKind = new HashMap <String, Integer>();
+	
+	private Map<String, String> accountPeriod = new HashMap <String, String>();
+
 	public DataBase() {
-		// 초기 ATM이 DataBase를 갖고 있다는 가정하에 시작하기 때문에
-		// constructor에 초기 정보들을 어느정도 넣어줍니다. ->info (Hashmap) 에다가
-		info.put("00000-00000", "0000");
-		account.put("00000-00000", (long)10000000);
-		info.put("11111-11111", "0000");
-		account.put("11111-11111", (long)20000);
-		info.put("22222-22222", "0000");
-		account.put("22222-22222", (long)30000);
+
+		accountInfo.put("000000-000000", "0000");
+		money.put("000000-000000", (long)10000000);
+		accountName.put("000000-000000", "이신혁");
+		accountKind.put("000000-000000", 1); 		//1 = "입출금 통장"	2= "정기예굼 통장"
+		accountPeriod.put("000000-000000", "NULL");
+		
+		accountInfo.put("111111-111111", "1111");
+		money.put("111111-111111", (long)20000);
+		accountName.put("111111-111111", "이지원");
+		accountKind.put("111111-111111", 1);
+		accountPeriod.put("111111-111111", "NULL");
+		
+		accountInfo.put("222222-222222", "2222");
+		money.put("222222-222222", (long)30000);
+		accountName.put("222222-222222", "정다빈");
+		accountKind.put("222222-222222", 1);
+		accountPeriod.put("222222-222222", "NULL");
+		
+		accountInfo.put("333333-333333", "1234");
+		money.put("333333-333333", (long)8156000);
+		accountName.put("333333-333333", "이지원");
+		accountKind.put("333333-333333", 2);
+		accountPeriod.put("333333-333333", "2022년3월12일");
+		
+		accountInfo.put("444444-444444", "9876");
+		money.put("444444-444444", (long)314000);
+		accountName.put("444444-444444", "정다빈");
+		accountKind.put("444444-444444", 2);
+		accountPeriod.put("444444-444444", "2021년12월5일");
+
 	}
-   
-	//해당 계좌의 보유 잔액을 리턴합니다.(getter)
-	public long getBalance(String id) {
-		return account.get(id);
+
+	public long getBalance(String account) {
+		return money.get(account);
 	}
-	//해시맵에 잔액 정보를 업데이트합니다.(setter)
-	public void setBalance(String id, long cash) {
-		account.put(id, cash);
+
+	public void setBalance(String account, long cash) {
+		money.put(account, cash);
 	}
-	//인자로 받은 id와 password가 맵에 저장된 password와 일치하는지 알려줍니다.
+	
 	public boolean checkPassword(String account, String password) {
-		if(password.equals(info.get(account))) return true;
+		if(password.equals(accountInfo.get(account))) return true;
 		return false;
 	}
-	//인자로 받은 id가 db에 존재하는지 알려줍니다
-	public boolean checkId(String id) {
-		if(info.containsKey(id)) {
-			return true;
-		}
+
+	public boolean checkAccount(String account) {
+		if(accountInfo.containsKey(account)) return true;
 		return false;
 	}
 	
 	public String getName(String account) {
-		return account;
+		return accountName.get(account);
 	}
 	
 	public String getKindAccount(String account) {
-		return account;
+		if(accountKind.get(account) == 1) return "입출금 통장";
+		return "정기예금 통장";
 	}
 	
 	public String getPeriod(String account) {
-		return account;
+		return accountPeriod.get(account);
 	}
 }

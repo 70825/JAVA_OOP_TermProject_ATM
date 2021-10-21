@@ -7,12 +7,20 @@ public class Interface {
 	public void Display(DataBase db, ATM atm, String account, int flag) {
 		this.account = account;
 		
+		if(db.getKindAccount(this.account).equals("정기예금 통장") && flag != 1 && flag != 4){
+			System.out.println("******************************************");
+			System.out.println("     정기예금 통장은 입금과 잔액조회만 가능합니다.      ");
+			System.out.printf("******************************************\n\n\n\n");
+			return;
+		}
+		
 		if(flag == 1) { // 입금
 			// temp_cash -> ex) 천원 1장, 오천원 2장, 만원 3장, 오만원 4장이면
 			// 입력은 '1 2 3 4'로 함
 			System.out.println("******************************************");
 			System.out.println("               입금을 선택하였습니다.            ");
 			System.out.printf("입금할 지폐 4개를 입력하세요.(천원, 오천원, 만원, 오만원) : ");
+			
 			sc.nextLine(); // 버퍼 비우기
 			StringTokenizer st = new StringTokenizer(sc.nextLine());
 			
@@ -79,11 +87,11 @@ public class Interface {
 			System.out.printf("송금을 받을 계좌번호를 입력하세요. : ");
 			String Remittance_Account = sc.next();
 			
-			boolean findAccount = db.checkId(Remittance_Account);
+			boolean findAccount = db.checkAccount(Remittance_Account);
 			while(!findAccount) {
 				System.out.println("송급 받을 계좌번호가 존재하지 않습니다. 다시 입력해주세요. : ");
 				Remittance_Account = sc.next();
-				findAccount = db.checkId(Remittance_Account);
+				findAccount = db.checkAccount(Remittance_Account);
 			}
 			
 			System.out.printf("송금할 금액을 입력해주세요. : ");
@@ -119,7 +127,7 @@ public class Interface {
 		
 		this.account = sc.next();
 		
-		return db.checkId(this.account);
+		return db.checkAccount(this.account);
 	}
 	
 	public boolean login_password(DataBase db, ATM atm, boolean flag) { // 비밀번호 입력
