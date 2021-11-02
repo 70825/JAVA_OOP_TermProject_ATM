@@ -1,13 +1,13 @@
 import java.util.*;
 
 public class Interface {
-    private String account, password;
+    private String accountNumber, password;
 	private Scanner sc = new Scanner(System.in);
 	
-	public void Display(DataBase db, ATM atm, String account, int flag) {
-		this.account = account;
+	public void Display(DataBase DB, ATM atm, TransactionLog LOG, String accountNumber, int flag) {
+		this.accountNumber = accountNumber;
 		
-		if(db.getKindAccount(this.account).equals("정기예금 통장") && flag != 1 && flag != 4){
+		if(!DB.kindAccount(this.accountNumber) && flag != 1 && flag != 4){
 			System.out.println("******************************************");
 			System.out.println("     정기예금 통장은 입금과 잔액조회만 가능합니다.      ");
 			System.out.printf("******************************************\n\n\n\n");
@@ -31,10 +31,10 @@ public class Interface {
 			
 			int total = won_50000 * 50000 + won_10000 * 10000 + won_5000 * 5000 + won_1000 * 1000;
 			
-			long rogCash1 = db.getBalance(this.account);
-			atm.Deposit(db, this.account, total);
-			long rogCash2 = db.getBalance(this.account);
-			db.setLog(db.count++, this.account, flag, rogCash1, rogCash2, "");
+			long rogCash1 = DB.getBalance(this.accountNumber);
+			atm.Deposit(DB, this.accountNumber, total);
+			long rogCash2 = DB.getBalance(this.accountNumber);
+			LOG.putLog(this.accountNumber, flag, rogCash1, rogCash2, "");
 			
 			atm.setWon_1000(atm.getWon_1000() + won_1000);
 			atm.setWon_5000(atm.getWon_5000() + won_5000);
@@ -60,11 +60,11 @@ public class Interface {
 			while(!flag1 || !flag2) {
 				if(atm.getWon_10000() >= won_10000 && atm.getWon_50000() >= won_50000) {
 					flag1 = true;
-					if(db.getBalance(this.account) >= (won_10000 * 10000 + won_50000 * 50000)) {
+					if(DB.getBalance(this.accountNumber) >= (won_10000 * 10000 + won_50000 * 50000)) {
 						flag2 = true;
 					}
 					else {
-						System.out.printf("계좌에 있는 잔액이 부족합니다. 현재 계좌에 있는 금액은 %d원 입니다.\n", db.getBalance(this.account));
+						System.out.printf("계좌에 있는 잔액이 부족합니다. 현재 계좌에 있는 금액은 %d원 입니다.\n", DB.getBalance(this.accountNumber));
 					}
 				}
 				else {
@@ -80,10 +80,10 @@ public class Interface {
 				}
 			}
 			
-			long rogCash1 = db.getBalance(this.account);
-			atm.WithDraw(db, this.account, won_50000 * 50000 + won_10000 * 10000);
-			long rogCash2 = db.getBalance(this.account);
-			db.setLog(db.count++, this.account, flag, rogCash1, rogCash2, "");
+			long rogCash1 = DB.getBalance(this.accountNumber);
+			atm.WithDraw(DB, this.accountNumber, won_50000 * 50000 + won_10000 * 10000);
+			long rogCash2 = DB.getBalance(this.accountNumber);
+			LOG.putLog(this.accountNumber, flag, rogCash1, rogCash2, "");
 			
 			atm.setWon_10000(atm.getWon_10000() - won_10000);
 			atm.setWon_10000(atm.getWon_50000() - won_50000);
@@ -97,39 +97,40 @@ public class Interface {
 			System.out.printf("송금을 받을 계좌번호를 입력하세요. : ");
 			String Remittance_Account = sc.next();
 			
-			boolean findAccount = db.checkAccount(Remittance_Account);
+			boolean findAccount = DB.checkAccount(Remittance_Account);
 			while(!findAccount) {
-				System.out.println("송급 받을 계좌번호가 존재하지 않습니다. 다시 입력해주세요. : ");
+				System.out.printf("송급 받을 계좌번호가 존재하지 않습니다. 다시 입력해주세요. : ");
 				Remittance_Account = sc.next();
-				findAccount = db.checkAccount(Remittance_Account);
+				findAccount = DB.checkAccount(Remittance_Account);
 			}
 			
 			System.out.printf("송금할 금액을 입력해주세요. : ");
-			int money = sc.nextInt();
-			while (money <= db.getBalance(this.account)) {
+			Long money = sc.nextLong();
+			
+			while (money > DB.getBalance(this.accountNumber)) {
 				System.out.printf("계좌내에 있는 금액이 부족합니다. 다시 입력해주세요. : ");
-				money = sc.nextInt();
+				money = sc.nextLong();
 			}
 			
-			long rogCash1 = db.getBalance(this.account);
-			atm.Remittance(db, this.account, Remittance_Account, money);
-			long rogCash2 = db.getBalance(this.account);
-			db.setLog(db.count++, this.account, flag, rogCash1, rogCash2, Remittance_Account);
+			long rogCash1 = DB.getBalance(this.accountNumber);
+			atm.Remittance(DB, Remittance_Account, this.accountNumber, money);
+			long rogCash2 = DB.getBalance(this.accountNumber);
+			LOG.putLog(this.accountNumber, flag, rogCash1, rogCash2, Remittance_Account);
 			
 			System.out.println("송금이 완료되었습니다.");
 			System.out.println("            이용해주셔서 감사합니다.             ");
 			System.out.printf("******************************************\n\n\n\n");
 		}
 		else{ // 잔액조회
-			db.setLog(db.count++, this.account, flag, 0, 0, "");
+			LOG.putLog(this.accountNumber, flag, 0, 0, "");
 			System.out.println("******************************************");
 			System.out.println("            잔액 조회를 선택하였습니다.           ");
-			System.out.printf("이름: %s\n", db.getName(this.account));
-			System.out.printf("계좌 번호: %s\n", this.account);
-			System.out.printf("통장 종류 : %s\n", db.getKindAccount(this.account));
-			System.out.printf("잔액 : %d\n", db.getBalance(this.account));
-			if(db.getKindAccount(this.account).equals("정기 예금 통장")){
-				System.out.printf("예금 만기 날짜 : %s\n", db.getPeriod(this.account));
+			System.out.printf("이름: %s\n", DB.getName(this.accountNumber));
+			System.out.printf("계좌 번호: %s\n", this.accountNumber);
+			System.out.printf("통장 종류 : %s\n", DB.kindAccount(this.accountNumber)? "입출금 통장" : "정기 예금 통장");
+			System.out.printf("잔액 : %d\n", DB.getBalance(this.accountNumber));
+			if(!DB.kindAccount(this.accountNumber)){
+				System.out.printf("예금 만기 날짜 : %s\n", DB.getPeriod(this.accountNumber));
 			}
 			System.out.println("            이용해주셔서 감사합니다.             ");
 			System.out.printf("******************************************\n\n\n\n");
@@ -140,21 +141,21 @@ public class Interface {
 		if(flag) System.out.print("로그인할 계좌 번호를 입력해주세요. : ");
 		else System.out.print("존재하지 않는 계좌번호입니다. 다시 입력해주세요. : ");
 		
-		this.account = sc.next();
+		this.accountNumber = sc.next();
 		
-		return db.checkAccount(this.account);
+		return db.checkAccount(this.accountNumber);
 	}
 	
 	public boolean login_password(DataBase db, ATM atm, boolean flag) { // 비밀번호 입력
-		if(flag) System.out.print("비밀번호를 입력주세요. : ");
+		if(flag) System.out.print("비밀번호를 입력해주세요. : ");
 		else System.out.print("비밀번호가 틀렸습니다. 다시 입력해주세요. : ");
 		
 		this.password = sc.next();
 		
-		return db.checkPassword(this.account, this.password);
+		return db.checkPassword(this.accountNumber, this.password);
 	}
 	
-	public int open(DataBase db, ATM atm, boolean start) {
+	public int open(DataBase db, ATM atm, TransactionLog LOG, boolean start) {
 		System.out.println("******************************************");
 		System.out.println("           은행을 찾아주셔서 감사합니다.          ");
 		System.out.println("******************************************");
@@ -176,7 +177,7 @@ public class Interface {
 			}
 		}
 		
-		this.Display(db, atm, this.account, val);
+		this.Display(db, atm, LOG, this.accountNumber, val);
 		
 		return val;
 	}
@@ -187,7 +188,7 @@ public class Interface {
 		System.out.printf("******************************************\n\n\n\n");
 	}
 	
-	public void showLog(DataBase db) {
+	public void showLog(TransactionLog LOG) {
 		System.out.printf("\n\n트랜잭션 로그 접근(Y/N) : ");
 		String ans = sc.next();
 		if(ans.equals("N")) return;
@@ -197,7 +198,7 @@ public class Interface {
 			int val = sc.nextInt();
 			if(val == 0) break;
 			
-			System.out.println("로그 번호 " + Integer.toString(val) + ": " + db.getLog(val));
+			System.out.println("로그 번호 " + Integer.toString(val) + ": " + LOG.getLog(val));
 		}
 		
 		System.out.println("******************************************");

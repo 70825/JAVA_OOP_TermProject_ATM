@@ -1,13 +1,13 @@
 public class ATM {
-   
+	   
 	// °¢ ÁöÆó ¼ö
 	private int won_1000, won_5000, won_10000, won_50000;
    
 	public ATM() {
 		this.won_1000 = 0;
 		this.won_50000 = 0;
-		this.won_10000 = 10000;
-		this.won_50000 = 10000;
+		this.won_10000 = 1000;
+		this.won_50000 = 200;
 	}
 	
 	public int getWon_1000() {
@@ -50,8 +50,8 @@ public class ATM {
 		db.setBalance(account, db.getBalance(account) - cash);
 	}
 	
-	public void Remittance(DataBase db, String from_account, String to_account, int cash) {
-		this.Deposit(db, from_account, cash);
-		this.WithDraw(db, to_account, cash);
+	public void Remittance(DataBase db, String from_account, String to_account, Long money) {
+		this.Deposit(db, from_account, money);
+		this.WithDraw(db, to_account, money);
 	}
 }
