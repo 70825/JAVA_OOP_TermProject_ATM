@@ -41,17 +41,4 @@ public class ATM {
 	public void setWon_50000(int won_50000) {
 		this.won_50000 = won_50000;
 	}
-	
-	public void Deposit(DataBase db, String account, long cash) {
-		db.setBalance(account, db.getBalance(account) + cash);
-	}
-	
-	public void WithDraw(DataBase db, String account, long cash) {
-		db.setBalance(account, db.getBalance(account) - cash);
-	}
-	
-	public void Remittance(DataBase db, String from_account, String to_account, Long money) {
-		this.Deposit(db, from_account, money);
-		this.WithDraw(db, to_account, money);
-	}
 }

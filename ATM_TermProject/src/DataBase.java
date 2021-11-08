@@ -17,10 +17,10 @@ public class DataBase {
 		accountDB.put("222222-222222", acc3);
 		
 		TermDepositAccount tdAcc1 = new TermDepositAccount("123456-123456", "1234", (long)8156000, "이신혁", "2022년3월12일");
-		termDepositAccountDB.put("333333-333333", tdAcc1);
+		termDepositAccountDB.put("123456-123456", tdAcc1);
 		
 		TermDepositAccount tdAcc2 = new TermDepositAccount("999999-999999", "9876", (long)314000, "이지원", "2021월12월5일");
-		termDepositAccountDB.put("444444-444444", tdAcc2);
+		termDepositAccountDB.put("999999-999999", tdAcc2);
 		
 		TermDepositAccount tdAcc3 = new TermDepositAccount("101010-196662", "3456", (long)50000, "정다빈", "2022년7월9일");
 		termDepositAccountDB.put("101010-196662", tdAcc3);
@@ -82,6 +82,7 @@ public class DataBase {
 	
 	// 만기 날짜 가져오기
 	public String getPeriod(String accountNumber) {
+		if(this.kindAccount(accountNumber)) return "";
 		return this.termDepositAccountDB.get(accountNumber).getAccountPeriod();
 	}
 }
