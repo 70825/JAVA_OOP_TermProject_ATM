@@ -54,7 +54,7 @@ public class Interface {
 		public inputShowDeposit() {
 			icon = new ImageIcon("images/deposit.png");
 			Image ic = icon.getImage();
-			Image ic2 = ic.getScaledInstance(600, 300, Image.SCALE_DEFAULT);
+			Image ic2 = ic.getScaledInstance(700, 300, Image.SCALE_DEFAULT);
 			icon2 = new ImageIcon(ic2);
 			img = new JLabel(icon2);
 			img.setIcon(icon2);
@@ -165,7 +165,7 @@ public class Interface {
 		public inputShowRemittance() {
 			icon = new ImageIcon("images/remittance.png");
 			Image ic = icon.getImage();
-			Image ic2 = ic.getScaledInstance(600, 300, Image.SCALE_DEFAULT);
+			Image ic2 = ic.getScaledInstance(700, 300, Image.SCALE_DEFAULT);
 			icon2 = new ImageIcon(ic2);
 			img = new JLabel(icon2);
 			img.setIcon(icon2);
@@ -174,23 +174,23 @@ public class Interface {
 			text1 = new JLabel("==================송금할 계좌와 송금할 금액을 입력해주시고 각각 엔터키를 누른 후 송금 버튼을 눌러주세요====================");
 			add(text1);
 			
-			text2 = new JLabel("송금할 계좌 번호 ");
+			text2 = new JLabel(" 송금할 계좌 번호를 입력하세요 ");
 			add(text2);
 			
-			account = new JTextField(30);
+			account = new JTextField(35);
 			add(account);
 			
 			
-			check1 = new JButton("계좌 확인");
+			check1 = new JButton("  계좌 확인  ");
 			add(check1);
 			
-			text3 = new JLabel("송금할 금액");
+			text3 = new JLabel("  송금할 금액을 입력하세요  ");
 			add(text3);
 			
-			won = new JTextField(20);
+			won = new JTextField(35);
 			add(won);
 			
-			check2 = new JButton("송금");
+			check2 = new JButton("  송금  ");
 			add(check2);
 			
 			TextFieldHandler texthandler = new TextFieldHandler();
