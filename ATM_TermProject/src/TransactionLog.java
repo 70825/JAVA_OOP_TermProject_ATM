@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TransactionLog {
-	private int count; // 로그 번호 기록
+	public static int count; // 로그 번호 기록
 	private Map<Integer, String> transactionLog;
 	
 	public TransactionLog() {
