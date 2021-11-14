@@ -112,42 +112,95 @@ public class Interface {
 	
 	
 	// ==================== 출금 ======================
-	
-	public void openShowWithdraw() {
-		System.out.println("******************************************");
-		System.out.println("               출금을 선택하였습니다.            ");
-		return;
+	public class inputShowWithdraw extends JPanel {
+		private JLabel text1;
+		private JLabel text2;
+		private JTextField Wwon;
+		private JButton check;
+		private Font font = new Font("궁서", Font.BOLD, 10);
+		private JLabel img;
+		private ImageIcon icon, icon2;
+		
+		public inputShowWithdraw() {
+			icon = new ImageIcon("./images/withdraw.png");
+			Image ic = icon.getImage();
+			Image ic2 = ic.getScaledInstance(700, 300, Image.SCALE_DEFAULT);
+			icon2 = new ImageIcon(ic2);
+			img = new JLabel(icon2);
+			img.setIcon(icon2);
+			add(img);
+			
+			text1 = new JLabel("========================출금할 금액을 입력해주시고 엔터키를 누른 후 입금 버튼을 눌러주세요==========================");
+			add(text1);
+			
+			text2 = new JLabel("만원 오만원(공백으로 구분)");
+			text2.setFont(font);
+			add(text2);
+			
+			Wwon = new JTextField(20);
+			add(Wwon);
+			
+			check = new JButton("출금");
+			add(check);
+			
+			WTextFieldHandler Wtexthandler = new WTextFieldHandler();
+			Wwon.addActionListener(Wtexthandler);
+			
+			ButtonHandler buttonhandler = new ButtonHandler();
+			check.addActionListener(buttonhandler);
+			
+			setBounds(0, 50, 700, 500);
+			setSize(new Dimension(700, 400));
+			 
+			application.add(this);
+		}
+		
+		private class WTextFieldHandler implements ActionListener{
+			public void actionPerformed(ActionEvent event) {
+				if(event.getSource() == Wwon) {
+					StringTokenizer st = new StringTokenizer(event.getActionCommand());
+					Controller.outMoney[0] = Integer.parseInt(st.nextToken());
+					Controller.outMoney[1] = Integer.parseInt(st.nextToken());
+				}
+			}
+		}
+		private class ButtonHandler implements ActionListener{
+			public void actionPerformed(ActionEvent event) {
+				if(event.getActionCommand().equals("출금")) {
+					int total = Controller.outMoney[0] * 10000 + Controller.outMoney[1] * 50000;
+					if(!Controller.checkAccountBalance(total)) {
+						long[] values = {Controller.getAccountBalance()};
+						errorShowWithdraw(1, values);
+					}
+					else if(!Controller.checkATMNumber()) {
+						long[] values = Controller.getATMNumbers();
+						errorShowWithdraw(2, values);
+					}
+					else {
+						Controller.withdrawATM();
+						setVisible(false);
+					}
+				}
+			}
+		}
 	}
 	
-	public int[] inputShowWithdraw(boolean flag) {
-		System.out.printf("출금할 지폐 2개를 입력하세요.(만원, 오만원) : ");
-		if(flag) sc.nextLine(); // 버퍼 비우기
-		StringTokenizer st = new StringTokenizer(sc.nextLine(), " ");
-		
-		int won_10000 = Integer.parseInt(st.nextToken());
-		int won_50000 = Integer.parseInt(st.nextToken());
-		
-		int[] output = {won_10000, won_50000};
-		
-		return output;
-	}
-	
-	// 에러 메세지는 JOptionPane로 만들기
 	public void errorShowWithdraw(int select, long[] values) {
 		if(select == 1) {
-			System.out.printf("계좌에 있는 잔액이 부족합니다. 현재 계좌에 있는 금액은 %d원 입니다.\n", values[0]);
+			String ERROR1 = "계좌에 있는 잔액이 부족합니다. 현재 계좌에 있는 금액은 " + values[0] + "원 입니다.\n";
+			JOptionPane.showMessageDialog(null, ERROR1, "ERRROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
+			
 		}
-		else{
-			System.out.printf("atm에 있는 지폐가 부족합니다. 현재 atm에 만원은 %d개 존재하고, 오만원은 %d개 존재합니다.\n", values[0], values[1]);
+		
+		else if(select == 2){
+			String ERROR2 = "atm에 있는 지폐가 부족합니다. 현재 atm에 만원은 " + values[0] + "개 존재하고, 오만원은 " +values[1] + "개 존재합니다.\n";
+			JOptionPane.showMessageDialog(null, ERROR2, "ERROR_MESSAGE", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
-	// 이 부분도 JOptionPane로 출금 완료했다는 메세지를 띄우기
 	public void closeShowWithdraw() {
 		JOptionPane.showMessageDialog(null, "출금이 완료되었습니다.");
 	}
-	
-	
 	// ==================== 송금 ======================
 	private class inputShowRemittance extends JPanel{
 		private JLabel text1;
@@ -219,12 +272,12 @@ public class Interface {
 		}
 		private class ButtonHandler implements ActionListener{
 			public void actionPerformed(ActionEvent event) {
-				if(event.getActionCommand().equals("계좌 확인")) {
+				if(event.getActionCommand().equals("  계좌 확인  ")) {
 					account_flag = Controller.checkRemittanceAccount(accountNumber);
 					if(account_flag) JOptionPane.showMessageDialog(null, "계좌 확인이 완료되었습니다.");
 					else JOptionPane.showMessageDialog(null, "존재하지 않은 계좌입니다. 다시 입력하시길 바랍니다.");
 				}
-				else if(event.getActionCommand().equals("송금")){
+				else if(event.getActionCommand().equals("  송금  ")){
 					if(account_flag) {
 						if(Controller.checkAccountBalance(Controller.remittance_money)) {
 							Controller.remittanceATM();
@@ -247,26 +300,79 @@ public class Interface {
 	}
 	
 	// ==================== 잔고 조회 ======================
-	public void openShowCheckBalance() {
-		System.out.println("******************************************");
-		System.out.println("            잔액 조회를 선택하였습니다.           ");
-	}
-	
-	public void showCheckBalance(String name, String id, boolean flag_kind, long balance, String period) {
+	public class showCheckBalance extends JPanel{
+		private JLabel abc;
+		private JLabel textname;
+		private JLabel textaccount;
+		private JLabel textaccountkind;
+		private JLabel textbalance;
+		private JLabel textd_day;
+		private JButton check;
 		
-		System.out.printf("이름: %s\n", name);
-		System.out.printf("계좌 번호: %s\n", id);
-		System.out.printf("통장 종류 : %s\n", flag_kind? "입출금 통장" : "정기 예금 통장");
-		System.out.printf("잔액 : %d\n", balance);
-		if(!flag_kind){
-			System.out.printf("예금 만기 날짜 : %s\n", period);
+		private int x = 250, x_i = 200, y = 0, y_i = 30;
+	
+		public void showCheckBalance(String name, String id, boolean flag_kind, long balance, String period){
+			setLayout(null);
+			
+			textname = new JLabel("이름: " +name);
+			textname.setBounds(x, y, x_i, y_i);
+			add(textname);
+
+			y = y + y_i;
+			
+			textaccount = new JLabel("계좌 번호: "+ id);
+			textaccount.setBounds(x, y, x_i, y_i);
+			add(textaccount);
+			
+			
+			if(flag_kind == true) {
+				y = y + y_i;
+				textaccountkind = new JLabel("통장 종류 : 입출금 통장");
+				textaccountkind.setBounds(x, y, x_i, y_i);
+				add(textaccountkind);
+			}
+			
+			else {
+				y = y + y_i;
+				textaccountkind = new JLabel("통장 종류 : 정기 예금 통장");
+				textaccountkind.setBounds(x, y, x_i, y_i);
+				add(textaccountkind);
+		
+			}
+			
+			y = y + y_i;
+			textbalance = new JLabel("잔액 : "+balance);
+			textbalance.setBounds(x, y, x_i, y_i);
+			add(textbalance);
+			
+			if(!flag_kind){
+				y = y + y_i;
+				textd_day = new JLabel("예금 만기 날짜 :" + period);
+				textd_day.setBounds(x, y, x_i, y_i);
+				add(textd_day);
+			}
+			
+			y = y + y_i;
+			check = new JButton("확인");
+			check.setBounds(x, y, x_i, y_i);
+			add(check);
+			
+			this.setBounds(0, 50, 700, 500);
+			this.setSize(new Dimension(700, 400));
+			 
+			application.add(this);
+			
+			ButtonHandler buttonhandler = new ButtonHandler();
+			check.addActionListener(buttonhandler);
 		}
 		
-	}
-	
-	public void closeShowCheckBalance() {
-		System.out.println("            이용해주셔서 감사합니다.             ");
-		System.out.printf("******************************************\n\n\n\n");
+		private class ButtonHandler implements ActionListener{
+			public void actionPerformed(ActionEvent event) {
+				if(event.getActionCommand().equals("확인")) {
+					setVisible(false);
+				}
+			}
+		}
 	}
 	
 	
@@ -408,13 +514,13 @@ public class Interface {
 				else if(res.equals("출금")) {
 					if(!Controller.kind_account) inaccessible();
 					else{
-						Controller.withdrawATM(); // 이 부분 수정해야함
+						inputShowWithdraw isw = new inputShowWithdraw();
 					}
 				}
 				else if(res.equals("송금")) {
 					if(!Controller.kind_account) inaccessible();
 					else{
-						inputShowRemittance isw = new inputShowRemittance();
+						inputShowRemittance isr = new inputShowRemittance();
 					}
 				}
 				else if(res.equals("잔고 조회")) {
