@@ -111,16 +111,17 @@ public class Controller {
 	}
 	
 	public static void depositATM() {
-		// Controller <-> View
-		// 금액을 입력 받고, 모든 돈의 합을 구함
-		//GUI.inputShowDeposit();
+		// 금액을 입력 받은 것으로 모든 돈의 합을 구함
 		total_money = putMoney[0] * 1000 + putMoney[1] * 5000 + putMoney[2] * 10000 + putMoney[3] * 50000;
 		
-		// Controller <-> Model, Controller -> Transaction Log
+		// Database <-> Controller <-> Model, Controller -> Transaction Log
 		// 계좌에 돈을 추가함. 이때 필요한 정보를 변수에 담고 트랜잭션 로그에 기록함
-		beforeLogCash = database.getBalance(id);
-		database.setBalance(id, database.getBalance(id) + total_money);
-		afterLogCash = database.getBalance(id);
+		Account nowAccount = database.getAccount(id);
+		beforeLogCash = nowAccount.getAccountBalance();
+		nowAccount.setAccountBalance(nowAccount.getAccountBalance() + total_money);
+		afterLogCash = nowAccount.getAccountBalance();
+		database.modifyAccount(id, nowAccount);
+		
 		LOG.putLog(id, 1, beforeLogCash, afterLogCash, "");
 		
 		// Controller -> Model
@@ -130,22 +131,23 @@ public class Controller {
 		atm.setWon_10000(atm.getWon_10000() + putMoney[2]);
 		atm.setWon_50000(atm.getWon_50000() + putMoney[3]);
 		
+		// 종료 화면
 		GUI.closeShowDeposit();
 		return;
 	}
 	
 	public static void withdrawATM() {
-		// Controller <-> View
-		// 출금할 지폐를 입력 받음
-		//GUI.OutputShowWithdraw();
+		// 금액을 입력 받은 것으로 모든 돈의 합을 구함
 		total_money = outMoney[0] * 10000 + outMoney[1] * 50000;
 		
 		
-		// Model <-> Controller, Controller <-> TransactionLog
+		// Database <-> Model <-> Controller, Controller <-> TransactionLog
 		// 계좌에서 돈을 출금하고, 트랜잭션 로그에 기록할 정보를 담고 기록해줌
-		beforeLogCash = database.getBalance(id);
-		database.setBalance(id, database.getBalance(id) - total_money);
-		afterLogCash = database.getBalance(id);
+		Account nowAccount = database.getAccount(id);
+		beforeLogCash = nowAccount.getAccountBalance();
+		nowAccount.setAccountBalance(nowAccount.getAccountBalance() - total_money);
+		afterLogCash = nowAccount.getAccountBalance();
+		database.modifyAccount(id, nowAccount);
 		LOG.putLog(id, 2, beforeLogCash, afterLogCash, "");
 		
 		
@@ -185,13 +187,33 @@ public class Controller {
 	
 	public static void remittanceATM() {
 		
-		// Model <-> Controller, Controller -> Transaction Log
+		// Database <-> Model <-> Controller, Controller -> Transaction Log
 		// 송금하는 계좌는 출금 기능 재사용, 송금받는 계좌는 입금 기능 재사용
 		// 이와 동시에 트랜잭션 로그 기록에 필요한 값을 저장하여 트랜잭션 로그를 기록함
-		beforeLogCash = database.getBalance(id);
-		database.setBalance(id, database.getBalance(id) - remittance_money);
-		database.setBalance(remittance_id, database.getBalance(remittance_id) + remittance_money);
-		afterLogCash = database.getBalance(id);
+		if(database.kindAccount(remittance_id)) {
+			Account nowAccount = database.getAccount(id);
+			Account remittanceAccount = database.getAccount(remittance_id);
+			
+			beforeLogCash = nowAccount.getAccountBalance();
+			nowAccount.setAccountBalance(nowAccount.getAccountBalance() - remittance_money);
+			remittanceAccount.setAccountBalance(remittanceAccount.getAccountBalance() + remittance_money);
+			afterLogCash = nowAccount.getAccountBalance();
+			
+			database.modifyAccount(id, nowAccount);
+			database.modifyAccount(remittance_id, remittanceAccount);
+		}
+		else {
+			Account nowAccount = database.getAccount(id);
+			TermDepositAccount remittanceAccount = database.getTermDepositAccount(remittance_id);
+			
+			beforeLogCash = nowAccount.getAccountBalance();
+			nowAccount.setAccountBalance(nowAccount.getAccountBalance() - remittance_money);
+			remittanceAccount.setAccountBalance(remittanceAccount.getAccountBalance() + remittance_money);
+			afterLogCash = nowAccount.getAccountBalance();
+			
+			database.modifyAccount(id, nowAccount);
+			database.modifyTermDepositAccount(remittance_id, remittanceAccount);
+		}
 		LOG.putLog(id , 3, beforeLogCash, afterLogCash, remittance_id);
 		
 		

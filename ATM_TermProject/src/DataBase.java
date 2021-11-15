@@ -48,10 +48,30 @@ public class DataBase {
 		if(this.kindAccount(accountNumber) && accountPassword.equals(this.accountDB.get(accountNumber).getAccountPassword())) {
 			return true;
 		}
-		else if(!this.kindAccount(accountNumber) && accountPassword.equals(this.termDepositAccountDB.get(accountNumber).getAccountPassword())){
+		else if(!this.kindAccount(accountNumber) && accountPassword != null && accountPassword.equals(this.termDepositAccountDB.get(accountNumber).getAccountPassword())){
 			return true;
 		}
 		return false;
+	}
+	
+	// 입출금 계좌 가져오기
+	public Account getAccount(String accountNumber) {
+		return this.accountDB.get(accountNumber);
+	}
+	
+	// 정기 예금 계좌 가져오기
+	public TermDepositAccount getTermDepositAccount(String accountNumber) {
+		return this.termDepositAccountDB.get(accountNumber);
+	}
+	
+	// 입출금 계좌 수정
+	public void modifyAccount(String accountNumber, Account newAccount) {
+		this.accountDB.put(accountNumber, newAccount);
+	}
+	
+	// 정기 예금 계좌 수정
+	public void modifyTermDepositAccount(String accountNumber, TermDepositAccount newTermDepsoitAccount) {
+		this.termDepositAccountDB.put(accountNumber, newTermDepsoitAccount);
 	}
 	
 	// 잔액 가져오기
