@@ -163,8 +163,9 @@ public class Controller {
 	}
 	
 	public static long getAccountBalance() {
-		return database.getBalance(id);
+		return database.getAccount(id).getAccountBalance();
 	}
+	
 	public static long[] getATMNumbers() {
 		long[] ans = {atm.getWon_10000(), atm.getWon_50000()};
 		return ans;
@@ -176,13 +177,12 @@ public class Controller {
 	
 	
 	// 송금
-	
 	public static boolean checkRemittanceAccount(String remittance_id) {
 		return database.checkAccount(remittance_id);
 	}
 	
 	public static boolean checkAccountBalance(long money) {
-		return database.getBalance(id) >= money;
+		return database.getAccount(id).getAccountBalance() >= money;
 	}
 	
 	public static void remittanceATM() {
@@ -222,25 +222,30 @@ public class Controller {
 	}
 	
 	// 잔고 조회
-	
 	public static void checkBalanceATM() {
-		
-		// Model <-> Controller
-		// 필요한 정보를 가지고 옴
-		checkName = database.getName(id);
-		checkMoney = database.getBalance(id);
-		checkPeriod = database.getPeriod(id);
-		
-		// Controller -> View
-		// 고객의 정보를 출력함
-		
+		// Controller <-> View
+		// 잔고 조회 JPanel을 가져옴
 		Interface.showCheckBalance sCB = GUI.new showCheckBalance();
 		
-		sCB.showCheckBalance(checkName, id, kind_account, checkMoney, checkPeriod);
+		// Database <-> Model <-> Controller <-> View
+		// 컨트롤러에서 database를 통해 model을 가져와 정보를 얻어내고 뷰에 정보가 나오게 해줌
+		if(kind_account) {
+			Account acc = database.getAccount(id);
+			checkName = acc.getAccountUserName();
+			checkMoney = acc.getAccountBalance();
+			sCB.showCheckBalance(checkName, id, kind_account, checkMoney, "");
+		}
+		else {
+			TermDepositAccount tdacc = database.getTermDepositAccount(id);
+			checkName = tdacc.getAccountUserName();
+			checkMoney = tdacc.getAccountBalance();
+			checkPeriod = tdacc.getAccountPeriod();
+			sCB.showCheckBalance(checkName, id, kind_account, checkMoney, checkPeriod);
+		}
 		
-		LOG.putLog(id, work, 0, 0, "");
-		
-		
+		// Controller -> TransactionLog
+		// 잔액 조회에 접근한 것을 로그에 저장함
+		LOG.putLog(id, 0, 0, 0, "");
 	}
 	
 	public static String getTransactionLog(int c) {
