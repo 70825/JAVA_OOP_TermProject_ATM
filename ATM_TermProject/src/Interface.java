@@ -22,7 +22,6 @@ import javax.swing.JTextField;
 
 public class Interface {
     private String accountNumber, password;
-	private Scanner sc = new Scanner(System.in);
 	private static Controller controller = new Controller();
 	private JFrame application = new JFrame("ATM");
 	

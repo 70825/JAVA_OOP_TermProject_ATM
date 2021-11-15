@@ -73,36 +73,4 @@ public class DataBase {
 	public void modifyTermDepositAccount(String accountNumber, TermDepositAccount newTermDepsoitAccount) {
 		this.termDepositAccountDB.put(accountNumber, newTermDepsoitAccount);
 	}
-	
-	// 잔액 가져오기
-	public long getBalance(String accountNumber) {
-		if(this.kindAccount(accountNumber)) {
-			return this.accountDB.get(accountNumber).getAccountBalance();
-		}
-		return this.termDepositAccountDB.get(accountNumber).getAccountBalance();
-	}
-	
-	// 잔액 재설정
-	public void setBalance(String accountNumber, long newBalance) {
-		if(this.kindAccount(accountNumber)) {
-			this.accountDB.get(accountNumber).setAccountBalance(newBalance);
-		}
-		else {
-			this.termDepositAccountDB.get(accountNumber).setAccountBalance(newBalance);
-		}
-	}
-	
-	// 고객 이름 가져오기
-	public String getName(String accountNumber) {
-		if(this.kindAccount(accountNumber)) {
-			return this.accountDB.get(accountNumber).getAccountUserName();
-		}
-		return this.termDepositAccountDB.get(accountNumber).getAccountUserName();
-	}
-	
-	// 만기 날짜 가져오기
-	public String getPeriod(String accountNumber) {
-		if(this.kindAccount(accountNumber)) return "";
-		return this.termDepositAccountDB.get(accountNumber).getAccountPeriod();
-	}
 }
