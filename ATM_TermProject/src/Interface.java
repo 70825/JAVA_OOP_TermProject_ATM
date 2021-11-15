@@ -47,6 +47,7 @@ public class Interface {
 		private JLabel text2;
 		private JTextField won;
 		private JButton check;
+		private JButton cancel;
 		private Font font = new Font("궁서", Font.BOLD, 10);
 		private JLabel img;
 		private ImageIcon icon, icon2;
@@ -73,11 +74,15 @@ public class Interface {
 			check = new JButton("입금");
 			add(check);
 			
+			cancel = new JButton("취소");
+			add(cancel);
+			
 			TextFieldHandler texthandler = new TextFieldHandler();
 			won.addActionListener(texthandler);
 			
 			ButtonHandler buttonhandler = new ButtonHandler();
 			check.addActionListener(buttonhandler);
+			cancel.addActionListener(buttonhandler);
 			
 			setBounds(0, 50, 700, 500);
 			setSize(new Dimension(700, 400));
@@ -102,6 +107,10 @@ public class Interface {
 					Controller.depositATM();
 					setVisible(false);
 				}
+				else if(event.getActionCommand().equals("취소")) {
+					JOptionPane.showMessageDialog(null, "취소하였습니다.");
+					setVisible(false);
+				}
 			}
 		}
 	}
@@ -117,6 +126,7 @@ public class Interface {
 		private JLabel text2;
 		private JTextField Wwon;
 		private JButton check;
+		private JButton cancel;
 		private Font font = new Font("궁서", Font.BOLD, 10);
 		private JLabel img;
 		private ImageIcon icon, icon2;
@@ -143,11 +153,15 @@ public class Interface {
 			check = new JButton("출금");
 			add(check);
 			
+			cancel = new JButton("취소");
+			add(cancel);
+			
 			WTextFieldHandler Wtexthandler = new WTextFieldHandler();
 			Wwon.addActionListener(Wtexthandler);
 			
 			ButtonHandler buttonhandler = new ButtonHandler();
 			check.addActionListener(buttonhandler);
+			cancel.addActionListener(buttonhandler);
 			
 			setBounds(0, 50, 700, 500);
 			setSize(new Dimension(700, 400));
@@ -181,6 +195,10 @@ public class Interface {
 						setVisible(false);
 					}
 				}
+				else if(event.getActionCommand().equals("취소")){
+					JOptionPane.showMessageDialog(null, "취소하였습니다.");
+					setVisible(false);
+				}
 			}
 		}
 	}
@@ -210,41 +228,62 @@ public class Interface {
 		private JTextField won;
 		private JButton check1;
 		private JButton check2;
+		private JButton remittance;
+		private JButton cancel;
 		private JLabel img;
 		private ImageIcon icon, icon2;
 		private boolean account_flag = false;
+		private boolean money_flag = false;
 		private String accountNumber = "";
 		
 		public inputShowRemittance() {
+			setLayout(null);
+			
 			icon = new ImageIcon("images/remittance.png");
 			Image ic = icon.getImage();
 			Image ic2 = ic.getScaledInstance(700, 300, Image.SCALE_DEFAULT);
 			icon2 = new ImageIcon(ic2);
 			img = new JLabel(icon2);
+			img.setBounds(0, 0, 700, 300);
 			img.setIcon(icon2);
 			add(img);
 			
-			text1 = new JLabel("==================송금할 계좌와 송금할 금액을 입력해주시고 각각 엔터키를 누른 후 송금 버튼을 눌러주세요====================");
+			text1 = new JLabel("=============송금할 계좌와 송금할 금액을 입력해주시고 각각 엔터키를 누른 후 송금 버튼을 눌러주세요=============");
+			text1.setBounds(0, 302, 700, 10);
 			add(text1);
 			
 			text2 = new JLabel(" 송금할 계좌 번호를 입력하세요 ");
+			text2.setBounds(20, 330, 230, 20);
 			add(text2);
 			
 			account = new JTextField(35);
+			account.setBounds(220, 330, 200, 20);
 			add(account);
 			
 			
 			check1 = new JButton("  계좌 확인  ");
+			check1.setBounds(430, 330, 100, 20);
 			add(check1);
 			
-			text3 = new JLabel("  송금할 금액을 입력하세요  ");
+			text3 = new JLabel(" 송금할 금액을 입력하세요  ");
+			text3.setBounds(20, 360, 230, 20);
 			add(text3);
 			
 			won = new JTextField(35);
+			won.setBounds(220, 360, 200, 20);
 			add(won);
 			
-			check2 = new JButton("  송금  ");
+			check2 = new JButton("  금액 확인  ");
+			check2.setBounds(430, 360, 100, 20);
 			add(check2);
+			
+			remittance = new JButton("송금");
+			remittance.setBounds(540, 330, 60, 50);
+			add(remittance);
+			
+			cancel = new JButton("취소");
+			cancel.setBounds(610, 330, 60, 50);
+			add(cancel);
 			
 			TextFieldHandler texthandler = new TextFieldHandler();
 			account.addActionListener(texthandler);
@@ -253,6 +292,8 @@ public class Interface {
 			ButtonHandler buttonhandler = new ButtonHandler();
 			check1.addActionListener(buttonhandler);
 			check2.addActionListener(buttonhandler);
+			remittance.addActionListener(buttonhandler);
+			cancel.addActionListener(buttonhandler);
 			
 			setBounds(0, 50, 700, 500);
 			setSize(new Dimension(700, 400));
@@ -277,19 +318,29 @@ public class Interface {
 					if(account_flag) JOptionPane.showMessageDialog(null, "계좌 확인이 완료되었습니다.");
 					else JOptionPane.showMessageDialog(null, "존재하지 않은 계좌입니다. 다시 입력하시길 바랍니다.");
 				}
-				else if(event.getActionCommand().equals("  송금  ")){
+				else if(event.getActionCommand().equals("  금액 확인  ")){
 					if(account_flag) {
 						if(Controller.checkAccountBalance(Controller.remittance_money)) {
-							Controller.remittanceATM();
-							setVisible(false);
+							JOptionPane.showMessageDialog(null, "금액 확인이 완료되었습니다.");
+							money_flag = true;
 						}
-						else {
-							JOptionPane.showMessageDialog(null, "계좌에 송금할 금액이 부족합니다.");
-						}
+						else JOptionPane.showMessageDialog(null, "계좌에 송금할 금액이 부족합니다.");
 					}
 					else {
 						JOptionPane.showMessageDialog(null, "계좌 확인을 다시 해주시길 바랍니다.");
 					}
+				}
+				else if(event.getActionCommand().equals("송금")) {
+					if(account_flag && money_flag) {
+						Controller.remittanceATM();
+						setVisible(false);
+					}
+					else if(!account_flag) JOptionPane.showMessageDialog(null, "계좌 확인을 다시 해주시길 바랍니다.");
+					else if(!money_flag) JOptionPane.showMessageDialog(null, "금액을 다시 확인해주시길 바랍니다.");
+				}
+				else if(event.getActionCommand().equals("취소")) {
+					JOptionPane.showMessageDialog(null, "취소하였습니다.");
+					setVisible(false);
 				}
 			}
 		}
@@ -301,7 +352,6 @@ public class Interface {
 	
 	// ==================== 잔고 조회 ======================
 	public class showCheckBalance extends JPanel{
-		private JLabel abc;
 		private JLabel textname;
 		private JLabel textaccount;
 		private JLabel textaccountkind;
