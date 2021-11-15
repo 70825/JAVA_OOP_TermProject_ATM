@@ -48,7 +48,7 @@ public class DataBase {
 		if(this.kindAccount(accountNumber) && accountPassword.equals(this.accountDB.get(accountNumber).getAccountPassword())) {
 			return true;
 		}
-		else if(!this.kindAccount(accountNumber) && accountPassword.equals(this.termDepositAccountDB.get(accountNumber).getAccountPassword())){
+		else if(!this.kindAccount(accountNumber) && accountPassword != null && accountPassword.equals(this.termDepositAccountDB.get(accountNumber).getAccountPassword())){
 			return true;
 		}
 		return false;
