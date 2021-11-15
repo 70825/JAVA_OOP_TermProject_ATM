@@ -60,6 +60,6 @@
 
 
 rano_del
-- [ ] Databse 생성자 데이터 값 추가
-- [ ] Controller 코드 수정
-- [ ] 출금 GUI, 고객 정보 GUI 코드 작성
+- [ ] Database 생성자에 데이터 값 추가
+- [ ] 출금 GUI, 고객 정보 GUI 연결을 위한 Controller 클래스 코드 수정
+- [ ] 출금 GUI, 고객 정보 GUI Interface 클래스 코드 작성
