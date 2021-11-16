@@ -1,7 +1,5 @@
 import java.util.stream.IntStream;
 
-import Interface.showCheckBalance;
-
 // 컨트롤러 : VIEW와 MODEL을 연결해주는 역할
 // VIEW와 MODEL은 코드 내부에서 직접적으로 서로 연결해주면 안됌. 그래서 컨트롤러를 사용해 간접적으로 연결함
 public class Controller {
