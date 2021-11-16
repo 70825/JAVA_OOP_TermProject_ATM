@@ -1,83 +1,85 @@
 import java.util.stream.IntStream;
 
-// ì»¨íŠ¸ë¡¤ëŸ¬ : VIEWì™€ MODELì„ ì—°ê²°í•´ì£¼ëŠ” ì—­í• 
-// VIEWì™€ MODELì€ ì½”ë“œ ë‚´ë¶€ì—ì„œ ì§ì ‘ì ìœ¼ë¡œ ì„œë¡œ ì—°ê²°í•´ì£¼ë©´ ì•ˆëŒ. ê·¸ë˜ì„œ ì»¨íŠ¸ë¡¤ëŸ¬ë¥¼ ì‚¬ìš©í•´ ê°„ì ‘ì ìœ¼ë¡œ ì—°ê²°í•¨
+import Interface.showCheckBalance;
+
+// ÄÁÆ®·Ñ·¯ : VIEW¿Í MODELÀ» ¿¬°áÇØÁÖ´Â ¿ªÇÒ
+// VIEW¿Í MODELÀº ÄÚµå ³»ºÎ¿¡¼­ Á÷Á¢ÀûÀ¸·Î ¼­·Î ¿¬°áÇØÁÖ¸é ¾È‰Î. ±×·¡¼­ ÄÁÆ®·Ñ·¯¸¦ »ç¿ëÇØ °£Á¢ÀûÀ¸·Î ¿¬°áÇÔ
 public class Controller {
-	// í´ë˜ìŠ¤ ë¶ˆëŸ¬ì˜¤ê¸°
+	// Å¬·¡½º ºÒ·¯¿À±â
 	private static DataBase database = new DataBase();
     private static ATM atm = new ATM();
     private static Interface GUI = new Interface();
     private static TransactionLog LOG = new TransactionLog();
     
-    // ======== ì»¨íŠ¸ë¡¤ëŸ¬ì—ì„œ ì‚¬ìš©í•  ë³€ìˆ˜ ==========
-    // ì—…ë¬´ì„ íƒ
+    // ======== ÄÁÆ®·Ñ·¯¿¡¼­ »ç¿ëÇÒ º¯¼ö ==========
+    // ¾÷¹«¼±ÅÃ
     public static int work = 0;
     
-    // ë¡œê·¸ì¸
+    // ·Î±×ÀÎ
     private static boolean flag_id = false, flag_password = false;
     private static boolean flag_check_id = false, flag_check_password = false;
     private static String id = null, password = null;
     
-    // ì…ê¸ˆ, ì¶œê¸ˆ, ì†¡ê¸ˆ, ì”ê³  ì¡°íšŒ ê³µí†µ
-    public static boolean kind_account; // true = ì…ì¶œê¸ˆê³„ì¢Œ, false = ì •ê¸°ì˜ˆê¸ˆê³„ì¢Œ
+    // ÀÔ±İ, Ãâ±İ, ¼Û±İ, ÀÜ°í Á¶È¸ °øÅë
+    public static boolean kind_account; // true = ÀÔÃâ±İ°èÁÂ, false = Á¤±â¿¹±İ°èÁÂ
     private static int total_money;
     
-    // ì…ê¸ˆ
-    public static int[] putMoney = {0, 0, 0, 0}; // ì§€í ì¢…ë¥˜(1000, 5000, 10000, 50000)
+    // ÀÔ±İ
+    public static int[] putMoney = {0, 0, 0, 0}; // ÁöÆó Á¾·ù(1000, 5000, 10000, 50000)
     
-    // ì¶œê¸ˆ
-    public static int[] outMoney = {0, 0}; // ì§€í ì¢…ë¥˜(10000, 50000)
+    // Ãâ±İ
+    public static int[] outMoney = {0, 0}; // ÁöÆó Á¾·ù(10000, 50000)
     private static boolean flag_atm, flag_account, flag_buffer;
     private static long[] errorValue1 = {0} ;
     private static long[] errorValue2 = {0, 0};
     
-    // ì†¡ê¸ˆ
+    // ¼Û±İ
     public static String remittance_id;
     private static boolean flag_remittance_account, flag_remittance_money;
     public static long remittance_money;
     
-    // ì”ê³  ì¡°íšŒ
+    // ÀÜ°í Á¶È¸
     private static String checkName, checkPeriod;
     private static long checkMoney;
     
-    // íŠ¸ëœì­ì…˜ ë¡œê·¸
+    // Æ®·£Àè¼Ç ·Î±×
     private static long beforeLogCash, afterLogCash;
     private static boolean accessLog;
     private static int accessNumber;
     
     
-    // ====================== í”„ë¡œê·¸ë¨ ì‹œì‘ ==============================
+    // ====================== ÇÁ·Î±×·¥ ½ÃÀÛ ==============================
     
-    public static boolean run() { // í”„ë¡œê·¸ë¨ ì‹œì‘
-		// ì–´ë–¤ ì—…ë¬´ë¥¼ ìˆ˜í–‰í•  ê²ƒì¸ì§€ (1: ì…ê¸ˆ, 2: ì¶œê¸ˆ: 3: ì†¡ê¸ˆ, 4: ì”ê³  ì¡°íšŒ 5: ì¢…ë£Œ, 6: ì‹œìŠ¤í…œ ì¢…ë£Œ)
+    public static boolean run() { // ÇÁ·Î±×·¥ ½ÃÀÛ
+		// ¾î¶² ¾÷¹«¸¦ ¼öÇàÇÒ °ÍÀÎÁö (1: ÀÔ±İ, 2: Ãâ±İ: 3: ¼Û±İ, 4: ÀÜ°í Á¶È¸ 5: Á¾·á, 6: ½Ã½ºÅÛ Á¾·á)
     	
-		if(work == 5) { // ë‹¨ìˆœ ì¢…ë£Œ -> ë¡œê·¸ì¸ ì •ë³´ ì´ˆê¸°í™”
+		if(work == 5) { // ´Ü¼ø Á¾·á -> ·Î±×ÀÎ Á¤º¸ ÃÊ±âÈ­
 			emptyLogin(); 
 			return true;
 		}
-		if(work == 6) { // ì‹œìŠ¤í…œ ì¢…ë£Œ -> ë¡œê·¸ ê¸°ë¡ ì ‘ê·¼ -> ì¢…ë£Œ
+		if(work == 6) { // ½Ã½ºÅÛ Á¾·á -> ·Î±× ±â·Ï Á¢±Ù -> Á¾·á
 			showSystemCloseATM();
 			return false;
 		}
 		
-		// ì´ë¯¸ ë¡œê·¸ì¸ë˜ì–´ ìˆìœ¼ë©´ ê±´ë„ˆëœ€
+		// ÀÌ¹Ì ·Î±×ÀÎµÇ¾î ÀÖÀ¸¸é °Ç³Ê¶Ü
 		if(id == null && password == null) login();
 		
-		// í†µì¥ ì¢…ë¥˜ í™•ì¸
+		// ÅëÀå Á¾·ù È®ÀÎ
 		kind_account = database.kindAccount(id);
 		
-		// work ë³€ìˆ˜ì— ë”°ë¥¸ ë™ì‘ ì‹¤í–‰
+		// work º¯¼ö¿¡ µû¸¥ µ¿ÀÛ ½ÇÇà
 		switch(work) {
-		case 1: // ì…ê¸ˆ
+		case 1: // ÀÔ±İ
 			depositATM();
 			break;
-		case 2: // ì¶œê¸ˆ
+		case 2: // Ãâ±İ
 			withdrawATM();
 			break;
-		case 3: // ì†¡ê¸ˆ
+		case 3: // ¼Û±İ
 			remittanceATM();
 			break;
-		case 4: // ì”ê³  ì¡°íšŒ
+		case 4: // ÀÜ°í Á¶È¸
 			checkBalanceATM();
 			break;
 		}
@@ -85,9 +87,9 @@ public class Controller {
 		return true;
 	}
     
-    // ======================= ì»¨íŠ¸ë¡¤ëŸ¬ ë‚´ë¶€ í•¨ìˆ˜ =======================
+    // ======================= ÄÁÆ®·Ñ·¯ ³»ºÎ ÇÔ¼ö =======================
 	
-	public static void login() { // ë¡œê·¸ì¸ ê¸°ëŠ¥ - ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ê°€ ë§ì„ ë•Œ ë¬´í•œ ë£¨í”„ë¥¼ íƒˆì¶œí•¨
+	public static void login() { // ·Î±×ÀÎ ±â´É - ¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£°¡ ¸ÂÀ» ¶§ ¹«ÇÑ ·çÇÁ¸¦ Å»ÃâÇÔ
 		while(!flag_id) {
 			id = GUI.login_account(flag_check_id);
 			flag_id = database.checkAccount(id);
@@ -111,11 +113,11 @@ public class Controller {
 	}
 	
 	public static void depositATM() {
-		// ê¸ˆì•¡ì„ ì…ë ¥ ë°›ì€ ê²ƒìœ¼ë¡œ ëª¨ë“  ëˆì˜ í•©ì„ êµ¬í•¨
+		// ±İ¾×À» ÀÔ·Â ¹ŞÀº °ÍÀ¸·Î ¸ğµç µ·ÀÇ ÇÕÀ» ±¸ÇÔ
 		total_money = putMoney[0] * 1000 + putMoney[1] * 5000 + putMoney[2] * 10000 + putMoney[3] * 50000;
 		
 		// Database <-> Controller <-> Model, Controller -> Transaction Log
-		// ê³„ì¢Œì— ëˆì„ ì¶”ê°€í•¨. ì´ë•Œ í•„ìš”í•œ ì •ë³´ë¥¼ ë³€ìˆ˜ì— ë‹´ê³  íŠ¸ëœì­ì…˜ ë¡œê·¸ì— ê¸°ë¡í•¨
+		// °èÁÂ¿¡ µ·À» Ãß°¡ÇÔ. ÀÌ¶§ ÇÊ¿äÇÑ Á¤º¸¸¦ º¯¼ö¿¡ ´ã°í Æ®·£Àè¼Ç ·Î±×¿¡ ±â·ÏÇÔ
 		Account nowAccount = database.getAccount(id);
 		beforeLogCash = nowAccount.getAccountBalance();
 		nowAccount.setAccountBalance(nowAccount.getAccountBalance() + total_money);
@@ -125,23 +127,23 @@ public class Controller {
 		LOG.putLog(id, 1, beforeLogCash, afterLogCash, "");
 		
 		// Controller -> Model
-		// ATMì— ëˆì„ ì¶”ê°€í•¨
+		// ATM¿¡ µ·À» Ãß°¡ÇÔ
 		atm.setWon_1000(atm.getWon_1000() + putMoney[0]);
 		atm.setWon_5000(atm.getWon_5000() + putMoney[1]);
 		atm.setWon_10000(atm.getWon_10000() + putMoney[2]);
 		atm.setWon_50000(atm.getWon_50000() + putMoney[3]);
 		
-		// ì¢…ë£Œ í™”ë©´
+		// Á¾·á È­¸é
 		GUI.closeShowDeposit();
 		return;
 	}
 	
 	public static void withdrawATM() {
-		// ê¸ˆì•¡ì„ ì…ë ¥ ë°›ì€ ê²ƒìœ¼ë¡œ ëª¨ë“  ëˆì˜ í•©ì„ êµ¬í•¨
+		// ±İ¾×À» ÀÔ·Â ¹ŞÀº °ÍÀ¸·Î ¸ğµç µ·ÀÇ ÇÕÀ» ±¸ÇÔ
 		total_money = outMoney[0] * 10000 + outMoney[1] * 50000;
 		
 		// Database <-> Model <-> Controller, Controller <-> TransactionLog
-		// ê³„ì¢Œì—ì„œ ëˆì„ ì¶œê¸ˆí•˜ê³ , íŠ¸ëœì­ì…˜ ë¡œê·¸ì— ê¸°ë¡í•  ì •ë³´ë¥¼ ë‹´ê³  ê¸°ë¡í•´ì¤Œ
+		// °èÁÂ¿¡¼­ µ·À» Ãâ±İÇÏ°í, Æ®·£Àè¼Ç ·Î±×¿¡ ±â·ÏÇÒ Á¤º¸¸¦ ´ã°í ±â·ÏÇØÁÜ
 		Account nowAccount = database.getAccount(id);
 		beforeLogCash = nowAccount.getAccountBalance();
 		nowAccount.setAccountBalance(nowAccount.getAccountBalance() - total_money);
@@ -151,7 +153,7 @@ public class Controller {
 		
 		
 		// Controller -> Model
-		// ATMì— ì§€íë¥¼ ì¤„ì—¬ì¤Œ
+		// ATM¿¡ ÁöÆó¸¦ ÁÙ¿©ÁÜ
 		atm.setWon_10000(atm.getWon_10000() - outMoney[0]);
 		atm.setWon_50000(atm.getWon_50000() - outMoney[1]);
 		
@@ -174,7 +176,7 @@ public class Controller {
 	}
 	
 	
-	// ì†¡ê¸ˆ
+	// ¼Û±İ
 	public static boolean checkRemittanceAccount(String remittance_id) {
 		return database.checkAccount(remittance_id);
 	}
@@ -186,8 +188,8 @@ public class Controller {
 	public static void remittanceATM() {
 		
 		// Database <-> Model <-> Controller, Controller -> Transaction Log
-		// ì†¡ê¸ˆí•˜ëŠ” ê³„ì¢ŒëŠ” ì¶œê¸ˆ ê¸°ëŠ¥ ì¬ì‚¬ìš©, ì†¡ê¸ˆë°›ëŠ” ê³„ì¢ŒëŠ” ì…ê¸ˆ ê¸°ëŠ¥ ì¬ì‚¬ìš©
-		// ì´ì™€ ë™ì‹œì— íŠ¸ëœì­ì…˜ ë¡œê·¸ ê¸°ë¡ì— í•„ìš”í•œ ê°’ì„ ì €ì¥í•˜ì—¬ íŠ¸ëœì­ì…˜ ë¡œê·¸ë¥¼ ê¸°ë¡í•¨
+		// ¼Û±İÇÏ´Â °èÁÂ´Â Ãâ±İ ±â´É Àç»ç¿ë, ¼Û±İ¹Ş´Â °èÁÂ´Â ÀÔ±İ ±â´É Àç»ç¿ë
+		// ÀÌ¿Í µ¿½Ã¿¡ Æ®·£Àè¼Ç ·Î±× ±â·Ï¿¡ ÇÊ¿äÇÑ °ªÀ» ÀúÀåÇÏ¿© Æ®·£Àè¼Ç ·Î±×¸¦ ±â·ÏÇÔ
 		if(database.kindAccount(remittance_id)) {
 			Account nowAccount = database.getAccount(id);
 			Account remittanceAccount = database.getAccount(remittance_id);
@@ -219,14 +221,14 @@ public class Controller {
 		
 	}
 	
-	// ì”ê³  ì¡°íšŒ
+	// ÀÜ°í Á¶È¸
 	public static void checkBalanceATM() {
 		// Controller <-> View
-		// ì”ê³  ì¡°íšŒ JPanelì„ ê°€ì ¸ì˜´
+		// ÀÜ°í Á¶È¸ JPanelÀ» °¡Á®¿È
 		Interface.showCheckBalance sCB = GUI.new showCheckBalance();
 		
 		// Database <-> Model <-> Controller <-> View
-		// ì»¨íŠ¸ë¡¤ëŸ¬ì—ì„œ databaseë¥¼ í†µí•´ modelì„ ê°€ì ¸ì™€ ì •ë³´ë¥¼ ì–»ì–´ë‚´ê³  ë·°ì— ì •ë³´ê°€ ë‚˜ì˜¤ê²Œ í•´ì¤Œ
+		// ÄÁÆ®·Ñ·¯¿¡¼­ database¸¦ ÅëÇØ modelÀ» °¡Á®¿Í Á¤º¸¸¦ ¾ò¾î³»°í ºä¿¡ Á¤º¸°¡ ³ª¿À°Ô ÇØÁÜ
 		if(kind_account) {
 			Account acc = database.getAccount(id);
 			checkName = acc.getAccountUserName();
@@ -242,7 +244,7 @@ public class Controller {
 		}
 		
 		// Controller -> TransactionLog
-		// ì”ì•¡ ì¡°íšŒì— ì ‘ê·¼í•œ ê²ƒì„ ë¡œê·¸ì— ì €ì¥í•¨
+		// ÀÜ¾× Á¶È¸¿¡ Á¢±ÙÇÑ °ÍÀ» ·Î±×¿¡ ÀúÀåÇÔ
 		LOG.putLog(id, 0, 0, 0, "");
 	}
 	
@@ -252,7 +254,7 @@ public class Controller {
 	
 	public static void showSystemCloseATM() {
 		// Controller <-> View
-		// íŠ¸ëœì­ì…˜ ë¡œê·¸ ê¸°ëŠ¥ì— ì ‘ê·¼í•  ê²ƒì¸ì§€ í™•ì¸í•¨, Nì´ë©´ ì¢…ë£Œ ì ˆì°¨ë¥¼ ë°ŸìŒ
+		// Æ®·£Àè¼Ç ·Î±× ±â´É¿¡ Á¢±ÙÇÒ °ÍÀÎÁö È®ÀÎÇÔ, NÀÌ¸é Á¾·á ÀıÂ÷¸¦ ¹âÀ½
 		
 		GUI.systemCloseMessage();
 		System.exit(0);
