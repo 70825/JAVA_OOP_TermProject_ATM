@@ -1,5 +1,5 @@
 
-public class Account { // 입출금 계좌(정기 예금 계좌는 Account를 상속받음)
+public class Account { // 입출금 계좌(정기 예금 계좌는 Account를 상속받음) 
 	private String accountNumber; // 계좌번호
 	private String accountPassword; // 비밀번호
 	private Long accountBalance; // 잔액
