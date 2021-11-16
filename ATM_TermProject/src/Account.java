@@ -1,9 +1,10 @@
 
-public class Account { // ÀÔÃâ±Ý °èÁÂ(Á¤±â ¿¹±Ý °èÁÂ´Â Account¸¦ »ó¼Ó¹ÞÀ½)
-	private String accountNumber; // °èÁÂ¹øÈ£
-	private String accountPassword; // ºñ¹Ð¹øÈ£
-	private Long accountBalance; // ÀÜ¾×
-	private String accountUserName; // °í°´¸í
+
+public class Account { // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½ Accountï¿½ï¿½ ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½)
+	private String accountNumber; // ï¿½ï¿½ï¿½Â¹ï¿½È£
+	private String accountPassword; // ï¿½ï¿½Ð¹ï¿½È£
+	private Long accountBalance; // ï¿½Ü¾ï¿½
+	private String accountUserName; // ï¿½ï¿½ï¿½ï¿½
 	
 	public Account(String Number, String Password, Long Balance, String UserName) {
 		this.setAccountNumber(Number);
