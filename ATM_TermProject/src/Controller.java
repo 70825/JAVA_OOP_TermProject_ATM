@@ -140,7 +140,6 @@ public class Controller {
 		// 금액을 입력 받은 것으로 모든 돈의 합을 구함
 		total_money = outMoney[0] * 10000 + outMoney[1] * 50000;
 		
-		
 		// Database <-> Model <-> Controller, Controller <-> TransactionLog
 		// 계좌에서 돈을 출금하고, 트랜잭션 로그에 기록할 정보를 담고 기록해줌
 		Account nowAccount = database.getAccount(id);
@@ -154,8 +153,7 @@ public class Controller {
 		// Controller -> Model
 		// ATM에 지폐를 줄여줌
 		atm.setWon_10000(atm.getWon_10000() - outMoney[0]);
-		atm.setWon_10000(atm.getWon_50000() - outMoney[1]);
-		
+		atm.setWon_50000(atm.getWon_50000() - outMoney[1]);
 		
 		GUI.closeShowWithdraw();
 		
