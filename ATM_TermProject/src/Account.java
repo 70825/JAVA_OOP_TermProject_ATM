@@ -1,6 +1,3 @@
-
-
-
 public class Account { // ����� ����(���� ���� ���´� Account�� ��ӹ���)
 	private String accountNumber; // ���¹�ȣ
 	private String accountPassword; // ��й�ȣ
