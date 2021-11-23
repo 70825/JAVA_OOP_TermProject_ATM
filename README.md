@@ -1,5 +1,7 @@
-# 💰 JAVA OOP 텀 프로젝트 - ATM 시스템 개발
+# 💰 자바와 객체지향프로그래밍 텀 프로젝트 - ATM 시스템 개발
 21년도 2학기 자바와 객체지향프로그래밍 수업의 ATM 시스템 개발 텀 프로젝트입니다.
+
+[![forthebadge](https://forthebadge.com/images/badges/made-with-java.svg)](https://forthebadge.com)
 
 <br>
 
@@ -69,11 +71,11 @@
 <br>
 
 ## 🤝 맡은 역할
-70825
+[70825](https://github.com/70825)
 - [ ] MVC 패턴으로 코드 리팩토링
 - [ ] 고객 정보 GUI를 제외한 모든 코드 작성에 관여
 
-rano_del
+[rano_del](https://github.com/reno-del)
 - [ ] Database 생성자에 데이터 값 추가
 - [ ] 출금 GUI, 고객 정보 GUI 연결을 위한 Controller 클래스 코드 수정
 - [ ] 출금 GUI, 고객 정보 GUI Interface 클래스 코드 작성
